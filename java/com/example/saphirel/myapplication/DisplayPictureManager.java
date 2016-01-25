@@ -14,6 +14,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by saphirel on 1/22/16.
@@ -38,22 +39,21 @@ public class DisplayPictureManager {
 
     public static Bitmap[] getAllFilesInStorage(Context context) {
 
-        Log.e("PATH:", Environment.getExternalStorageDirectory()+"/RandomTimeBasedWallpaper");
-        File[] listFiles = (new File(Environment.getExternalStorageDirectory()+"/RandomTimeBasedWallpaper")).listFiles();
-        Bitmap[] res = new Bitmap[listFiles.length];
+        ArrayList<String> filesPath = PicturesBDD.getAllPicturesInDB(context);
+        Bitmap[] res = new Bitmap[filesPath.size()];
 
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
 
-        for (int i = 0; i < listFiles.length; i++) {
+        for (int i = 0; i < filesPath.size(); i++) {
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/RandomTimeBasedWallpaper/" + listFiles[i].getName(), options);
+            BitmapFactory.decodeFile(filesPath.get(i), options);
 
             options.inSampleSize = DisplayWallpaperManager.calculateInSampleSize(options, 1000, 1000); //width and height
 
             options.inJustDecodeBounds = false;
-            Bitmap picture2 = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/RandomTimeBasedWallpaper/" + listFiles[i].getName(), options);
+            Bitmap picture2 = BitmapFactory.decodeFile(filesPath.get(i), options);
 
             res[i] = scaleBitmap(picture2, (display.getWidth()-100)/3, (display.getWidth()-100)/3);
             picture2.recycle();

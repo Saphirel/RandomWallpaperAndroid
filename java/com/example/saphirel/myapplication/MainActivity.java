@@ -3,9 +3,12 @@ package com.example.saphirel.myapplication;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,14 +19,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
     public static Context context;
+    private static final int SELECT_PICTURE = 1;
+    private String selectedImagePath;
+    //ADDED
+    private String filemanagerstring;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
+
+        PicturesBDD.removeAllDataInPictures(context);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -33,8 +46,10 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
             }
         });
 
@@ -103,5 +118,54 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+
+                //OI FILE Manager
+                filemanagerstring = selectedImageUri.getPath();
+
+                //MEDIA GALLERY
+                selectedImagePath = getPath(selectedImageUri);
+
+                //DEBUG PURPOSE - you can delete this if you want
+                if (selectedImagePath != null)
+                    System.out.println(selectedImagePath);
+                else System.out.println("selectedImagePath is null");
+                if (filemanagerstring != null)
+                    System.out.println(filemanagerstring);
+                else System.out.println("filemanagerstring is null");
+
+                //NOW WE HAVE OUR WANTED STRING
+                if (selectedImagePath != null)
+                    System.out.println(selectedImagePath);
+                else
+                    System.out.println("filemanagerstring is the right one for you!");
+
+                PicturesBDD.startDBAndCreateTableIfNotExists(context, "Pictures");
+                PicturesBDD.saveNewPicture(selectedImagePath, context);
+                ArrayList<String> pictures = PicturesBDD.getAllPicturesInDB(context);
+                for (int i = 0; i < pictures.size(); ++i) {
+                    Log.e("FILES", pictures.get(i));
+                }
+            }
+        }
+    }
+
+    //UPDATED!
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            //HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+            //THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else return null;
     }
 }

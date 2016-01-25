@@ -3,6 +3,7 @@ package com.example.saphirel.myapplication;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,10 +27,13 @@ public class GalleryFragment extends Fragment {
         if (container == null) {
             return null;
         }
+
         container.removeAllViews();
         View rootView = inflater.inflate(R.layout.content_gallery, container, false);
         getActivity().setTitle("Gallery");
+
         GridLayout gridLayout = (GridLayout) rootView.findViewById(R.id.gridLayout);
+
         DisplayPictureManager.setImages(MainActivity.context, gridLayout);
         return rootView;
     }

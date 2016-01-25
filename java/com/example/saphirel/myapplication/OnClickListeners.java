@@ -1,10 +1,12 @@
 package com.example.saphirel.myapplication;
 
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by saphirel on 1/22/16.
@@ -16,8 +18,8 @@ public class OnClickListeners implements View.OnClickListener {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                File[] files = (new File(Environment.getExternalStorageDirectory()+"/RandomTimeBasedWallpaper")).listFiles();
-                DisplayWallpaperManager.displayOneWallpaper(MainActivity.context, files[v.getId()].getName());
+                ArrayList<String> files = PicturesBDD.getAllPicturesInDB(MainActivity.context);
+                DisplayWallpaperManager.displayOneWallpaper(MainActivity.context, files.get(v.getId()));
             }
         }).start();
     }

@@ -19,14 +19,14 @@ public class DisplayWallpaperManager {
 
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/RandomTimeBasedWallpaper/"+path, options);
+        BitmapFactory.decodeFile(path, options);
 
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         options.inSampleSize = calculateInSampleSize(options, display.getWidth(), display.getHeight()); //width and height
 
         options.inJustDecodeBounds = false;
-        Bitmap picture2 = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/RandomTimeBasedWallpaper/"+path, options);
+        Bitmap picture2 = BitmapFactory.decodeFile(path, options);
 
         Bitmap background = Bitmap.createBitmap(display.getWidth(), display.getHeight(), Bitmap.Config.ARGB_8888);
         float originalHeight = picture2.getHeight();
