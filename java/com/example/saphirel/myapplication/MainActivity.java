@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity
     public static Context context;
     private static final int SELECT_PICTURE = 1;
     private String selectedImagePath;
-    //ADDED
     private String filemanagerstring;
 
     @Override
@@ -35,7 +34,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
 
-        PicturesBDD.removeAllDataInPictures(context);
+        Intent timeBasedIntent = new Intent(this, TimeBasedDisplayManager.class);
+        startService(timeBasedIntent);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
