@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridLayout;
 
 import java.util.ArrayList;
 
@@ -148,9 +149,10 @@ public class MainActivity extends AppCompatActivity
                 PicturesBDD.startDBAndCreateTableIfNotExists(context, "Pictures");
                 PicturesBDD.saveNewPicture(selectedImagePath, context);
                 ArrayList<String> pictures = PicturesBDD.getAllPicturesInDB(context);
-                for (int i = 0; i < pictures.size(); ++i) {
-                    Log.e("FILES", pictures.get(i));
-                }
+
+                GridLayout gridLayout = (GridLayout) findViewById(R.id.gridLayout);
+                if (gridLayout != null)
+                    DisplayPictureManager.setImages(MainActivity.context, gridLayout);
             }
         }
     }

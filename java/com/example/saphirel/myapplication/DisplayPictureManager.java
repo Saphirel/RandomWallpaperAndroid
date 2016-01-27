@@ -24,6 +24,7 @@ public class DisplayPictureManager {
     public static void setImages(Context context, GridLayout gridLayout) {
 
         Bitmap[] picturesToDisplay = getAllFilesInStorage(context);
+        gridLayout.removeAllViews();
         gridLayout.setColumnCount(3);
 
         for (int i = 0; i < picturesToDisplay.length; i++) {
